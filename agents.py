@@ -325,10 +325,25 @@ Format each insight as a complete sentence starting with a bullet point."""
         
         response = self.generate_response(insights_prompt)
         
+        # Ensure response is a string
+        if not isinstance(response, str):
+            response = str(response)
+        
         # Parse insights from response
-        insights = [line.strip().lstrip('•-*').strip() 
-                   for line in response.split('\n') 
-                   if line.strip() and not line.strip().startswith('#')]
+        try:
+            insights = [line.strip().lstrip('•-*').strip() 
+                       for line in response.split('\n') 
+                       if line.strip() and not line.strip().startswith('#')]
+            
+            # Filter out empty insights
+            insights = [i for i in insights if len(i) > 10]
+            
+            # If no insights extracted, create a default one
+            if not insights:
+                insights = ["Analysis completed successfully. Review the visualizations and detailed statistics for more information."]
+        except Exception as e:
+            self.observability.log_error("insight_parsing_error", str(e))
+            insights = ["Analysis completed. Unable to generate detailed insights at this time."]
         
         return insights[:7]  # Limit to 7 insights
     
@@ -443,9 +458,14 @@ class CoordinatorAgent(BIAgent):
                 context
             )
             
+            # Ensure insights is a list
+            if not isinstance(insights, list):
+                insights = [str(insights)] if insights else []
+            
             # Store insights in memory
             for insight in insights:
-                self.memory_bank.add_insight(session, insight, is_global=True)
+                if insight and isinstance(insight, str):
+                    self.memory_bank.add_insight(session, insight, is_global=True)
             
             # Generate final report
             report_path = self.report_generator.generate_report(
