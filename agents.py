@@ -55,6 +55,8 @@ class BIAgent:
         Returns:
             Generated response text
         """
+        import time
+        
         # Log agent call
         self.observability.log_agent_call(
             agent_name=self.name,
@@ -76,26 +78,55 @@ and explain your reasoning. When analyzing data, consider:
 {f'Context: {context}' if context else ''}
 """
         
-        try:
-            # Generate response
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_instruction,
-                    temperature=Config.TEMPERATURE,
-                )
-            )
-            
-            return response.text
+        max_retries = 3
+        retry_delay = 5
         
-        except Exception as e:
-            self.observability.log_error(
-                error_type="generation_error",
-                message=str(e),
-                agent=self.name
-            )
-            return f"Error generating response: {str(e)}"
+        for attempt in range(max_retries):
+            try:
+                # Generate response
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_instruction,
+                        temperature=Config.TEMPERATURE,
+                    )
+                )
+                
+                return response.text
+            
+            except Exception as e:
+                error_str = str(e)
+                
+                # Check if it's a rate limit error
+                if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str or "quota" in error_str.lower():
+                    if attempt < max_retries - 1:
+                        self.observability.logger.warning(
+                            "rate_limit_hit",
+                            attempt=attempt + 1,
+                            retry_in=retry_delay,
+                            agent=self.name
+                        )
+                        time.sleep(retry_delay)
+                        retry_delay *= 2  # Exponential backoff
+                        continue
+                    else:
+                        # Max retries reached, return a friendly message
+                        return (
+                            "Unable to generate AI insights due to API rate limits. "
+                            "The statistical analysis and visualizations are still available. "
+                            "Please review the detailed analysis section for numeric insights."
+                        )
+                else:
+                    # Other error
+                    self.observability.log_error(
+                        error_type="generation_error",
+                        message=str(e),
+                        agent=self.name
+                    )
+                    return f"Error generating response: {str(e)}"
+        
+        return "Analysis completed. Unable to generate AI insights at this time."
 
 
 class DataAnalystAgent(BIAgent):
