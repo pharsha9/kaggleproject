@@ -392,6 +392,16 @@ class ReportGenerationTool:
         """
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
+        # Validate inputs - ensure they are lists
+        if not isinstance(visualizations, list):
+            visualizations = []
+        if not isinstance(insights, list):
+            insights = [] if insights is None else [str(insights)]
+        
+        # Filter out None values
+        visualizations = [v for v in visualizations if v is not None]
+        insights = [i for i in insights if i is not None and str(i).strip()]
+        
         html_content = f"""
         <!DOCTYPE html>
         <html lang="en">
@@ -492,12 +502,12 @@ class ReportGenerationTool:
             
             <div class="section">
                 <h2>💡 Key Insights</h2>
-                {"".join([f'<div class="insight">• {insight}</div>' for insight in insights])}
+                {"".join([f'<div class="insight">• {insight}</div>' for insight in (insights if isinstance(insights, list) else [])])}
             </div>
             
             <div class="section">
                 <h2>📊 Visualizations</h2>
-                {"".join([f'<img src="{viz}" class="visualization" alt="Visualization">' for viz in visualizations])}
+                {"".join([f'<img src="{viz}" class="visualization" alt="Visualization">' for viz in (visualizations if isinstance(visualizations, list) else [])])}
             </div>
             
             <div class="section">
