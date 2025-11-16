@@ -1,0 +1,93 @@
+[
+    {
+        "employee_id": "E001",
+        "department": "Sales",
+        "salary": 75000,
+        "years_experience": 5,
+        "performance_score": 87,
+        "projects_completed": 23,
+        "training_hours": 45
+    },
+    {
+        "employee_id": "E002",
+        "department": "Engineering",
+        "salary": 95000,
+        "years_experience": 8,
+        "performance_score": 92,
+        "projects_completed": 31,
+        "training_hours": 52
+    },
+    {
+        "employee_id": "E003",
+        "department": "Marketing",
+        "salary": 68000,
+        "years_experience": 3,
+        "performance_score": 78,
+        "projects_completed": 15,
+        "training_hours": 38
+    },
+    {
+        "employee_id": "E004",
+        "department": "Sales",
+        "salary": 82000,
+        "years_experience": 6,
+        "performance_score": 85,
+        "projects_completed": 28,
+        "training_hours": 48
+    },
+    {
+        "employee_id": "E005",
+        "department": "Engineering",
+        "salary": 105000,
+        "years_experience": 10,
+        "performance_score": 95,
+        "projects_completed": 42,
+        "training_hours": 60
+    },
+    {
+        "employee_id": "E006",
+        "department": "HR",
+        "salary": 71000,
+        "years_experience": 4,
+        "performance_score": 82,
+        "projects_completed": 19,
+        "training_hours": 41
+    },
+    {
+        "employee_id": "E007",
+        "department": "Marketing",
+        "salary": 73000,
+        "years_experience": 5,
+        "performance_score": 81,
+        "projects_completed": 21,
+        "training_hours": 43
+    },
+    {
+        "employee_id": "E008",
+        "department": "Engineering",
+        "salary": 88000,
+        "years_experience": 7,
+        "performance_score": 89,
+        "projects_completed": 35,
+        "training_hours": 55
+    },
+    {
+        "employee_id": "E009",
+        "department": "Sales",
+        "salary": 79000,
+        "years_experience": 5,
+        "performance_score": 86,
+        "projects_completed": 26,
+        "training_hours": 46
+    },
+    {
+        "employee_id": "E010",
+        "department": "Finance",
+        "salary": 92000,
+        "years_experience": 9,
+        "performance_score": 91,
+        "projects_completed": 38,
+        "training_hours": 58
+    }
+]
+
