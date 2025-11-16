@@ -82,11 +82,16 @@ class DataIngestionTool:
         Returns:
             Dictionary containing summary statistics
         """
+        # Convert missing values to dict with int conversion
+        missing_values = {}
+        for col, val in df.isnull().sum().items():
+            missing_values[col] = int(val)
+        
         summary = {
             "shape": {"rows": int(df.shape[0]), "columns": int(df.shape[1])},
             "columns": list(df.columns),
             "dtypes": df.dtypes.astype(str).to_dict(),
-            "missing_values": df.isnull().sum().to_dict(),
+            "missing_values": missing_values,
             "memory_usage": f"{df.memory_usage(deep=True).sum() / 1024**2:.2f} MB",
             "numeric_summary": df.describe().to_dict() if len(df.select_dtypes(include=[np.number]).columns) > 0 else {}
         }
