@@ -242,22 +242,35 @@ class MemoryBank:
             "suggested_analyses": []
         }
         
+        # Ensure dataset_columns is a list
+        if not isinstance(dataset_columns, list):
+            dataset_columns = list(dataset_columns) if dataset_columns else []
+        
         # Find similar past analyses
         for session_file in self.sessions_path.glob("session_*.json"):
-            with open(session_file, 'r') as f:
-                data = json.load(f)
-                past_columns = data.get("dataset_info", {}).get("columns", [])
-                
-                # Calculate similarity based on common columns
-                common_cols = set(dataset_columns) & set(past_columns)
-                if len(common_cols) > 0:
-                    similarity = len(common_cols) / len(set(dataset_columns) | set(past_columns))
-                    if similarity > 0.3:  # 30% similarity threshold
-                        context["similar_analyses"].append({
-                            "session_id": data["session_id"],
-                            "similarity": similarity,
-                            "common_columns": list(common_cols)
-                        })
+            try:
+                with open(session_file, 'r') as f:
+                    data = json.load(f)
+                    past_columns = data.get("dataset_info", {}).get("columns", [])
+                    
+                    # Ensure past_columns is a list
+                    if not isinstance(past_columns, list):
+                        past_columns = list(past_columns) if past_columns else []
+                    
+                    # Calculate similarity based on common columns
+                    if dataset_columns and past_columns:
+                        common_cols = set(dataset_columns) & set(past_columns)
+                        if len(common_cols) > 0:
+                            similarity = len(common_cols) / len(set(dataset_columns) | set(past_columns))
+                            if similarity > 0.3:  # 30% similarity threshold
+                                context["similar_analyses"].append({
+                                    "session_id": data["session_id"],
+                                    "similarity": similarity,
+                                    "common_columns": list(common_cols)
+                                })
+            except Exception as e:
+                # Skip problematic session files
+                continue
         
         # Add relevant global insights
         context["relevant_insights"] = self.global_insights[-5:]  # Last 5 insights
