@@ -1,3 +1,4 @@
+[![Google AI Agents](https://img.shields.io/badge/Google%20AI%20Agents-Capstone%20Project-blue)](https://www.kaggle.com/competitions/google-ai-agents-capstone)
 # 📊 BI Intelligence Agent System
 
 > **Multi-Agent Business Intelligence Analyzer powered by Google Gemini**
