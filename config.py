@@ -19,7 +19,8 @@ class Config:
     GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
     
     # Model Configuration
-    DEFAULT_MODEL: str = os.getenv("DEFAULT_MODEL", "gemini-1.5-flash-latest")
+    # Note: Using experimental model - has rate limits but better features
+    DEFAULT_MODEL: str = os.getenv("DEFAULT_MODEL", "gemini-2.0-flash-exp")
     TEMPERATURE: float = float(os.getenv("TEMPERATURE", "0.7"))
     
     # Logging Configuration
