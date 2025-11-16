@@ -1,3 +1,6 @@
+# Add .streamlit directory but not secrets
+.streamlit/secrets.toml
+
 # Environment and API Keys
 .env
 *.key
@@ -36,6 +39,7 @@ wheels/
 
 # Data files (keep examples, ignore user data)
 data/user_data/
+data/temp_*
 *.db
 *.sqlite
 
@@ -52,3 +56,5 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 
+# Streamlit
+.streamlit/secrets.toml

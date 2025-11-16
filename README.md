@@ -4,6 +4,14 @@
 
 A sophisticated multi-agent system that automates business intelligence analysis using Google's Gemini AI models. Built for the Google AI Agents Intensive Course Capstone Project (Enterprise Agents Track).
 
+## 🌐 Live Demo
+
+**Try it now!** Visit our deployed Streamlit app:
+
+🔗 **[Live Demo](https://pharsha9-kaggleproject-app.streamlit.app)** *(Deploy to get your URL)*
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
+
 ---
 
 ## 🎯 Project Overview
