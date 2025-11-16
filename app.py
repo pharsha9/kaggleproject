@@ -357,9 +357,23 @@ def run_analysis(file_path, df):
             st.session_state.last_results = results
             st.session_state.last_execution_time = execution_time
             
-            display_analysis_results(results, execution_time)
+            # Validate results before display
+            try:
+                display_analysis_results(results, execution_time)
+            except Exception as display_error:
+                st.error(f"❌ Error displaying results: {display_error}")
+                st.write("**Debug Info:**")
+                st.write(f"insights type: {type(results.get('insights'))}")
+                st.write(f"insights value: {results.get('insights')}")
+                st.write(f"visualizations type: {type(results.get('visualizations'))}")
+                import traceback
+                with st.expander("🔍 Display Error Details"):
+                    st.code(traceback.format_exc())
         else:
-            st.error(f"❌ Analysis failed: {results.get('error', 'Unknown error')}")
+            error_msg = results.get('error', 'Unknown error')
+            st.error(f"❌ Analysis failed: {error_msg}")
+            st.write("**Debug Info:**")
+            st.json(results)
     
     except Exception as e:
         st.error(f"❌ Error during analysis: {e}")
@@ -391,18 +405,32 @@ def display_analysis_results(results, execution_time):
     # Insights
     st.subheader("💡 Key Insights")
     insights = results.get('insights', [])
-    for i, insight in enumerate(insights, 1):
-        st.markdown(f'<div class="insight-box"><strong>{i}.</strong> {insight}</div>', unsafe_allow_html=True)
+    
+    # Ensure insights is a list
+    if not isinstance(insights, list):
+        insights = [str(insights)] if insights else []
+    
+    if insights:
+        for i, insight in enumerate(insights, 1):
+            if insight:  # Skip empty insights
+                st.markdown(f'<div class="insight-box"><strong>{i}.</strong> {insight}</div>', unsafe_allow_html=True)
+    else:
+        st.info("No insights generated. Check the detailed analysis below.")
     
     # Visualizations
-    if results.get('visualizations'):
+    visualizations = results.get('visualizations', [])
+    if not isinstance(visualizations, list):
+        visualizations = []
+    
+    if visualizations:
         st.subheader("📈 Visualizations")
         
         cols = st.columns(2)
-        for idx, viz_path in enumerate(results['visualizations']):
-            with cols[idx % 2]:
-                if Path(viz_path).exists():
-                    st.image(viz_path, caption=Path(viz_path).name, use_column_width=True)
+        for idx, viz_path in enumerate(visualizations):
+            if viz_path:  # Skip None values
+                with cols[idx % 2]:
+                    if Path(viz_path).exists():
+                        st.image(viz_path, caption=Path(viz_path).name, use_column_width=True)
     
     # Report link
     st.subheader("📄 Full Report")
